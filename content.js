@@ -99,6 +99,20 @@ class LinkedInPostFilter {
     const skipLinks = document.querySelectorAll("h2.feed-skip-link__container");
     const posts = [];
 
+    // Handle the first post (before the first skip link)
+    if (skipLinks.length > 0) {
+      const firstSkipLink = skipLinks[0];
+      let current = firstSkipLink.parentElement?.firstElementChild;
+
+      while (current && current !== firstSkipLink) {
+        if (current.tagName === "DIV" && this.looksLikePost(current)) {
+          posts.push(current);
+        }
+        current = current.nextElementSibling;
+      }
+    }
+
+    // Handle posts between skip links (original working logic)
     for (let i = 0; i < skipLinks.length - 1; i++) {
       const currentSkipLink = skipLinks[i];
       const nextSkipLink = skipLinks[i + 1];
@@ -148,6 +162,26 @@ class LinkedInPostFilter {
     return posts;
   }
 
+  looksLikePost(element) {
+    // Check if element has sufficient size and contains post-like content
+    if (element.offsetHeight < 50) {
+      return false;
+    }
+
+    const hasPostContent = element.querySelector(
+      [
+        '[data-urn*="urn:li:activity"]',
+        ".feed-shared-update-v2",
+        ".update-components-text",
+        ".feed-shared-text",
+        '[data-test-id*="activity"]',
+        ".feed-shared-article",
+      ].join(", "),
+    );
+
+    return !!hasPostContent;
+  }
+
   findPosts(element) {
     if (element.matches && this.isPost(element)) {
       return [element];
@@ -164,6 +198,11 @@ class LinkedInPostFilter {
         prevSkipLink &&
         prevSkipLink.matches("h2.feed-skip-link__container")
       ) {
+        return true;
+      }
+
+      // Also check if it looks like a post (for first post handling)
+      if (this.looksLikePost(element)) {
         return true;
       }
     }
