@@ -23,11 +23,7 @@ class LinkedInPostFilter {
         ["keywords", "caseSensitive", "hiddenCount"],
         (result) => {
           // Set default keywords if none exist
-          const defaultKeywords = [
-            "formueskatt",
-            "Promotert av",
-            "Promoted by",
-          ];
+          const defaultKeywords = [];
           this.keywords = result.keywords || defaultKeywords;
           this.caseSensitive = result.caseSensitive || false;
           this.hiddenCount = result.hiddenCount || 0;

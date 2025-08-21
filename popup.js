@@ -28,7 +28,7 @@ function loadSettings() {
   // Check if chrome.storage is available
   if (typeof chrome === "undefined" || !chrome.storage) {
     // Fallback for testing or if storage API is not available
-    const defaultKeywords = ["formueskatt", "Promotert av", "Promoted by"];
+    const defaultKeywords = [];
     keywords = defaultKeywords;
     caseSensitive = false;
     hiddenCount = 0;
